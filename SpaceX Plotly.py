@@ -7,9 +7,9 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 
 # Read the airline data into pandas dataframe
-spacex_df = pd.read_csv("spacex_launch_dash.csv")
-max_payload = spacex_df['Payload Mass (kg)'].max()
-min_payload = spacex_df['Payload Mass (kg)'].min()
+spacex_df = pd.read_csv("https://raw.githubusercontent.com/niyaryca/Applied-Data-Science-Capstone-Project/main/dataset_part_1.csv")
+max_payload = spacex_df['PayloadMass'].max()
+min_payload = spacex_df['PayloadMass'].min()
 
 # Create a dash application
 app = dash.Dash(__name__)
@@ -59,11 +59,10 @@ app.layout = html.Div(children=[html.H1('SpaceX Launch Records Dashboard',
 
 def build_graph(site_dropdown):
     if site_dropdown == 'ALL':
-        piechart = px.pie(data_frame = spacex_df, names='Launch Site', values='class' ,title='Total Launches for All Sites')
+        piechart = px.pie(data_frame = spacex_df, names='LaunchSite', values='class' ,title='Total Launches for All Sites')
         return piechart
     else:
-        #specific_df = spacex_df['Launch Site']
-        specific_df=spacex_df.loc[spacex_df['Launch Site'] == site_dropdown]
+        specific_df=spacex_df.loc[spacex_df['LaunchSite'] == site_dropdown]
         piechart = px.pie(data_frame = specific_df, names='class',title='Total Launch for a Specific Site')
         return piechart
 
@@ -76,16 +75,16 @@ def build_graph(site_dropdown):
 
 def update_graph(site_dropdown, payload_slider):
     if site_dropdown == 'ALL':
-        filtered_data = spacex_df[(spacex_df['Payload Mass (kg)']>=payload_slider[0])
+        filtered_data = spacex_df[(spacex_df['PayloadMass']>=payload_slider[0])
         &(spacex_df['Payload Mass (kg)']<=payload_slider[1])]
-        scatterplot = px.scatter(data_frame=filtered_data, x="Payload Mass (kg)", y="class", 
+        scatterplot = px.scatter(data_frame=filtered_data, x="PayloadMass", y="class", 
         color="Booster Version Category")
         return scatterplot
     else:
-        specific_df=spacex_df.loc[spacex_df['Launch Site'] == site_dropdown]
-        filtered_data = specific_df[(specific_df['Payload Mass (kg)']>=payload_slider[0])
-        &(spacex_df['Payload Mass (kg)']<=payload_slider[1])]
-        scatterplot = px.scatter(data_frame=filtered_data, x="Payload Mass (kg)", y="class", 
+        specific_df=spacex_df.loc[spacex_df['LaunchSite'] == site_dropdown]
+        filtered_data = specific_df[(specific_df['PayloadMass']>=payload_slider[0])
+        &(spacex_df['PayloadMass']<=payload_slider[1])]
+        scatterplot = px.scatter(data_frame=filtered_data, x="PayloadMass", y="class", 
         color="Booster Version Category")
         return scatterplot
 
